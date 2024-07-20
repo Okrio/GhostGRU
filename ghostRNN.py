@@ -77,20 +77,20 @@ class GhostGRUCell(nn.Module):
             x = x.unsqueeze(1)
             b,t,f = x.shape
             # t = 1
-        hidden = hidden.squeeze(1)
+        hidden = hidden.squeeze(0)
         outputs = []
         for i in range(t):
             x_t = x[:,i,:]
             hidden,_ = self.one_run(x_t, hidden)
             outputs.append(hidden)
         outputs = torch.stack(outputs,1)
-        hidden = hidden.unsqueeze(1)
+        hidden = hidden.unsqueeze(0)
         return outputs, hidden
 
 
 def test_ghostGRUCell():
-    inp = torch.randn(1,2,8)
-    hidden = torch.randn(1,1,8)
+    inp = torch.randn(2,2,8)
+    hidden = torch.randn(1,2,8)
     
     net = GhostGRUCell(input_size=8,hidden_size=8,ghost_ratio=3, has_bias=True).eval()
     out = net(inp, hidden)
